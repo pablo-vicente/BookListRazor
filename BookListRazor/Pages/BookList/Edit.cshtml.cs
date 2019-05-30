@@ -12,18 +12,40 @@ namespace BookListRazor.Pages.BookList
     {
         private ApplicationDbContext _db;
 
+        [TempData]
+        public string Message { get; set; }
+
         public EditModel(ApplicationDbContext db)
         {
             _db = db;
         }
 
+       
+
         [BindProperty]
         public Book Book { get; set; }
 
-        public void OnGet(int id)
+        public async Task OnGet(int id)
         {
-            Book = _db.Book.Find(id);
+            Book = await _db.Book.FindAsync(id);
             //Book = _db.Book.Where(b => b.Id == id).FirstOrDefault();
+        }
+
+        public async Task<IActionResult> OnPost()
+        {
+            if (ModelState.IsValid)
+            {
+                var BookFromDb = await _db.Book.FindAsync(Book.Id);
+                BookFromDb.Name = Book.Name;
+                BookFromDb.Autor = Book.Autor;
+                BookFromDb.ISBN = Book.ISBN;
+
+                await _db.SaveChangesAsync();
+                Message = "Book has been updated succesfully.";
+                return RedirectToPage("Index");
+            }
+
+            return RedirectToPage();
         }
     }
 }

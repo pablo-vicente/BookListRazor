@@ -5,52 +5,70 @@
 }
 
 <br/>
-<div class="container row">
-    <div class="col-6">
-        <h2 class="text-info">Book List</h2>
-    </div>
-    <div class="col-6 text-right">
-        <a asp-page="/BookList/Create" class="btn btn-primary">Crete New Book</a>
-    </div>
+<div class="container align-items-start">
+        <div class="col-6">
+            <h2 class="text-info">Book List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-page="Create" class="btn btn-primary">Create New Book</a>
+        </div>
 </div>
 
-@if (Model.Books.Count() > 0)
+<br />
+@if (Model.Message != null)
 {
-    <br/><br />
-    <table class="table table-striped table-bordered">
-        <tr class="table-inverse">
-            <th>
-                @Html.DisplayNameFor(m=>m.Books.FirstOrDefault().Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m=>m.Books.FirstOrDefault().Autor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m=>m.Books.FirstOrDefault().ISBN)
-            </th>
-            <th></th>
-        </tr>
-        @foreach(var item in Model.Books)
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aira-label="close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        @Model.Message
+    </div>
+}
+
+
+    <form method="post">
+        @if (Model.Books.Count() > 0)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(m => item.Autor)
-            </td>
-            <td>
-                @Html.DisplayFor(m => item.ISBN)
-            </td>
-            <td>
-                <button class="btn btn-danger btn-sm">Delete</button>
-                <a asp-route-id="@item.Id" asp-page="Edit" class="btn btn-success btn-sm">Edit</a> 
-            </td>
-        </tr>
+            <br /><br />
+            <table class="table table-striped table-bordered">
+                <tr class="table-inverse">
+                    <th>
+                        @Html.DisplayNameFor(m => m.Books.FirstOrDefault().Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(m => m.Books.FirstOrDefault().Autor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(m => m.Books.FirstOrDefault().ISBN)
+                    </th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model.Books)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.Autor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.ISBN)
+                        </td>
+                        <td>
+                            <button asp-page-handler="Delete" asp-route-id="@item.Id"
+                                    onclick="return confirm('Are you sure you want to deletar this book?')"
+                                    class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                            <a asp-route-id="@item.Id" asp-page="Edit" class="btn btn-success btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </table>
         }
-    </table>
-}
-else
-{
-    <p> No Books available.</p>
-}
+        else
+        {
+            <p> No Books available.</p>
+        }
+    </form>
